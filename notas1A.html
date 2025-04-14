@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apontamento de Atividades</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .student-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .student-name {
+            flex: 1;
+            font-size: 16px;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+        .slider.red {
+            background-color: #ff0000;
+        }
+        .slider.blue {
+            background-color: #0000ff;
+        }
+        .slider.green {
+            background-color: #00ff00;
+        }
+        #submit-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #submit-btn:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Apontamento de Atividades</h1>
+    <div id="students-list"></div>
+    <button id="submit-btn" onclick="submitData()">Enviar</button>
+
+    <script>
+        const students = [
+            "Áivan Lourenço de Souza Sobrinha",
+            "Alicia Maria Miranda Azevedo",
+            "Ana Cecília Vieira Pontes",
+            "Ana Clara da Silva",
+            "Anamim Farias da Fonseca Sotero",
+            "Arthur Ferreira Figueiró",
+            "Arthur Gabriel Silva Melo",
+            "Carlos Antonio Chaves Neto",
+            "Danilo Henrique Santos Bezerra",
+            "Davi de Oliveira Bezerra",
+            "Davi Thialyson Albino Araújo",
+            "Débora Ranaiça Matias Gomes Pereira",
+            "Gabriel da Rocha Silva",
+            "Geovana Torres Guimarães Silva",
+            "Hannan Miguel Simões da Silva",
+            "Heitor Melo e Souza",
+            "Isabelly Marry Bezerra de Santana",
+            "Janduy Júnior Pergentino de Lima",
+            "Jessé Schaida da Silva",
+            "João Marcelo da Silva Rocha Santos",
+            "João Victor Miranda de Andrade Ebrahim",
+            "Jullia Roberta Silva Melo",
+            "Kauane Vitória Barbosa de Lima",
+            "Kaywson Almeida Tenório Reis",
+            "Laura Gabriela Vasconcelos",
+            "Lethycia Farias Cordeiro Sobral",
+            "Letícia Éllen Apolinário Marciano da Silva",
+            "Maria Eduarda Menêzes Bezerra",
+            "Maria Luiza de La Fuente Menezes",
+            "Maria Rita Lemos Vilar da Silva",
+            "Marjorie Gabrielle Sousa Camelo",
+            "Melissa Gabrielle Alves de Santana",
+            "Natanael Vieira dos Santos Silva",
+            "Nathanny Nayara de Vasconcelos Silva",
+            "Nicolas Pedrosa de Andrade Lima",
+            "Pedro Arthur Silva",
+            "Pedro Henrique Ribas de Menezes",
+            "Pedro Lucca Neves dos Santos",
+            "Rayssa Kelly Cruz Caula",
+            "Roana Bezerra Barros",
+            "Thayná Heloyse de Santana Sebastião",
+            "Yan Lucas de Oliveira Gomes"
+        ];
+
+        const studentsList = document.getElementById('students-list');
+
+        students.forEach(student => {
+            const row = document.createElement('div');
+            row.className = 'student-row';
+            row.innerHTML = `
+                <div class="student-name">${student}</div>
+                <label class="toggle-switch">
+                    <input type="radio" name="${student}" value="0" checked onchange="updateSlider(this)">
+                    <span class="slider red"></span>
+                </label>
+                <label class="toggle-switch">
+                    <input type="radio" name="${student}" value="6" onchange="updateSlider(this)">
+                    <span class="slider blue"></span>
+                </label>
+                <label class="toggle-switch">
+                    <input type="radio" name="${student}" value="10" onchange="updateSlider(this)">
+                    <span class="slider green"></span>
+                </label>
+            `;
+            studentsList.appendChild(row);
+        });
+
+        function updateSlider(input) {
+            const sliders = input.parentElement.parentElement.querySelectorAll('.slider');
+            sliders.forEach(slider => {
+                slider.className = 'slider';
+                if (slider.previousElementSibling.value === input.value) {
+                    if (input.value === '0') slider.classList.add('red');
+                    if (input.value === '6') slider.classList.add('blue');
+                    if (input.value === '10') slider.classList.add('green');
+                }
+            });
+        }
+
+        function submitData() {
+            const data = students.map(student => {
+                const selectedValue = document.querySelector(`input[name="${student}"]:checked`).value;
+                return { student, value: parseInt(selectedValue) };
+            });
+
+            fetch('https://script.google.com/macros/s/AKfycbxmaRsLbl5P8xjySSiyl8HjMvGrCA3H9DVATOyBxgBbVXCSJhq4N6rhgtWmFfY1cmw/execT_URL', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+                mode: 'cors'
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    window.location.href = 'success.html';
+                } else {
+                    alert('Erro ao enviar dados: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao enviar dados.');
+            });
+        }
+    </script>
+</body>
+</html>
