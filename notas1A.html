@@ -155,31 +155,31 @@
             });
         }
 
-        function submitData() {
-            const data = students.map(student => {
-                const selectedValue = document.querySelector(`input[name="${student}"]:checked`).value;
-                return { student, value: parseInt(selectedValue) };
-            });
+       function submitData() {
+    const data = students.map(student => {
+        const selectedValue = document.querySelector(`input[name="${student}"]:checked`).value;
+        return { student, value: parseInt(selectedValue) };
+    });
 
-            fetch('https://script.google.com/macros/s/AKfycbxmaRsLbl5P8xjySSiyl8HjMvGrCA3H9DVATOyBxgBbVXCSJhq4N6rhgtWmFfY1cmw/execT_URL', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-                mode: 'cors'
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === 'success') {
-                    window.location.href = 'success.html';
-                } else {
-                    alert('Erro ao enviar dados: ' + result.message);
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao enviar dados.');
-            });
+    fetch('https://script.google.com/macros/s/AKfycbxmaRsLbl5P8xjySSiyl8HjMvGrCA3H9DVATOyBxgBbVXCSJhq4N6rhgtWmFfY1cmw/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        mode: 'cors'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            window.location.href = 'success.html';
+        } else {
+            alert('Erro ao enviar dados: ' + result.message);
         }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao enviar dados.');
+    });
+}
     </script>
 </body>
 </html>
